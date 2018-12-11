@@ -1,18 +1,12 @@
-import React, { Component } from 'react'
-
 import Header from './Header'
-import Nav from './Nav'
+import Meta from './Meta'
 
-class Page extends Component {
-  render() {
-    return (
-      <div>
-        <Nav />
-        <Header/>
-        {this.props.children}
-      </div>
-    )
-  }
-}
+const Page = props => (
+  <div>
+    <Meta />
+    <Header/>
+    {props.children}
+  </div>
+)
 
 export default Page
