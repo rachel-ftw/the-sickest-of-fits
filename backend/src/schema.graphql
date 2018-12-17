@@ -13,8 +13,11 @@ type Mutation {
     image: String
     largeImage: String
   ): Item!
+  updateItem(id: ID!, title: String, description: String, price: Int): Item!
 }
+# TODO add ability to update images
 
 type Query {
   items: [Item]!
+  item(where: ItemWhereUniqueInput!): Item
 }
