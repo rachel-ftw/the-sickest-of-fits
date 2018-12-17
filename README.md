@@ -2,7 +2,9 @@
 
 A demo react storefront.
 
-### Stack
+Items in store pulled from [Witchsy](https://www.witchsy.com/). Support women run businesses!
+
+## Stack
 
 Front End
 
@@ -10,6 +12,7 @@ Front End
 - [next.js](https://nextjs.org/)
 - [styled components](https://www.styled-components.com/)
 - [Apollo Client](https://www.apollographql.com/docs/react/)
+- [Cloudinary](https://cloudinary.com)
 
 Back End
 
@@ -17,7 +20,7 @@ Back End
 - [graphql-yoga](https://github.com/prisma/graphql-yoga)🧘‍♀️
 - [prisma](https://github.com/prisma/prisma)
 
-### Run the Project Locally
+## Run the Project Locally
 
 1. clone the repo
 1. `npm i` in both the front end and back end folders
