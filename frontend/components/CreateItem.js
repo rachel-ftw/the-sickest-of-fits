@@ -51,19 +51,23 @@ class CreateItem extends Component {
   }
 
   uploadFile = async e => {
-    console.log('uploading...')
+    // TODO make it so users can't submit form until this file is uploaded to cloudinary.
     const { files } = e.target
     const data = new FormData()
+
     data.append('file', files[0])
-    data.append('upload_preset', 'sickfits')
-    // https://res.cloudinary.com/rachel-ftw/image/upload/v1545071579/sample.jpg
-    const res = await fetch('https://api.cloudinary.com/v1_1/rachel-ftw/image/upload', {
-      method: 'POST',
-      body: data
-    })
+    data.append('upload_preset', 'sick-fits')
+
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/rachel-ftw/image/upload',
+      {
+        method: 'POST',
+        body: data
+      }
+    )
 
     const file = await res.json()
-    console.log(file)
+
     this.setState({
       image: file.secure_url,
       largeImage: file.eager[0].secure_url,
@@ -89,6 +93,7 @@ class CreateItem extends Component {
                   placeholder="file"
                   required
                   onChange={uploadFile}/>
+                {this.state.image && <img src={image} alt="Upload Preview" width="200" />}
               </label>
               <label htmlFor="title">
                 Title
@@ -127,7 +132,6 @@ class CreateItem extends Component {
           </Form>
         )}
       </Mutation>
-
     )
   }
 }
