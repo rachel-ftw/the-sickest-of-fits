@@ -44,10 +44,12 @@ const Pagination = ({ page }) => {
               </Link>
               <p>Page {page} of {pages}</p>
               <p>{count} items total</p>
-              <Link href={{
-                pathname: '/items',
-                query: { page: page + 1 },
-              }}>
+              <Link
+                prefetch
+                href={{
+                  pathname: '/items',
+                  query: { page: page + 1 },
+                }}>
                 <a className="next" aria-disabled={page >= pages}>next →</a>
               </Link>
             </PaginationStyles>

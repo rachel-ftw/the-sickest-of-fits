@@ -60,10 +60,7 @@ class CreateItem extends Component {
 
     const res = await fetch(
       'https://api.cloudinary.com/v1_1/rachel-ftw/image/upload',
-      {
-        method: 'POST',
-        body: data
-      }
+      { method: 'POST', body: data }
     )
 
     const file = await res.json()
