@@ -31,29 +31,26 @@ const ItemsList = styled.div`
   margin: 0 auto;
 `
 
-class Items extends Component {
-  render() {
-    return (
-      <Center>
-        <Pagination />
-        <Query query={ALL_ITEMS_QUERY}>
-          {({ data, loading, error }) => {
-            if(loading) return <p>loading...</p>
-            if(error) return <p>Error: {error.message}</p>
+const Items = ({ page }) => (
+  <Center>
+    <Pagination page={page} />
+    <Query query={ALL_ITEMS_QUERY}>
+      {({ data, loading, error }) => {
+        if(loading) return <p>loading...</p>
+        if(error) return <p>Error: {error.message}</p>
 
-            return (
-              <ItemsList>
-                {data.items.map(item =>
-                  <Item key={item.id} item={item}>{item.title}</Item>
-                )}
-              </ItemsList>
-            )
-          }}
-        </Query>
-        <Pagination />
-      </Center>
-    )
-  }
-}
+        return (
+          <ItemsList>
+            {data.items.map(item =>
+              <Item key={item.id} item={item}>{item.title}</Item>
+            )}
+          </ItemsList>
+        )
+      }}
+    </Query>
+    <Pagination page={page} />
+  </Center>
+)
+
 
 export default Items
