@@ -1,10 +1,5 @@
 # import * from './generated/prisma.graphql'
 
-type User {
-  id: ID!
-  name: String!
-}
-
 type Mutation {
   createItem(
     title: String
@@ -15,8 +10,9 @@ type Mutation {
   ): Item!
   updateItem(id: ID!, title: String, description: String, price: Int): Item!
   deleteItem(id: ID!): Item
+  signUp(email: String!, password: String!, name: String!): User!
 }
-# TODO add ability to update images
+# TODO add ability to update images in updateItem
 
 type Query {
   items(
