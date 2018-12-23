@@ -3,11 +3,9 @@ const jwt = require('jsonwebtoken')
 const { randomBytes } = require('crypto')
 const { promisify } = require('util')
 
-const { APP_SECRET } = process.env
-
 const signJWTAndCreateCookie = (user, ctx) => {
   const oneYear = 1000 * 60 * 60 * 24 * 365
-  const token = jwt.sign({ userId: user.id }, APP_SECRET)
+  const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET)
   ctx.response.cookie('token', token, { httpOnly: true, maxAge: oneYear })
 }
 
@@ -82,7 +80,7 @@ const Mutations = {
       data: { resetToken, resetTokenExpiry }
     })
 
-    return { message: "Success" }
+    return { message: "Successfully requested password reset." }
   },
 
   async resetPassword(parent, args, ctx, info) {
@@ -93,7 +91,7 @@ const Mutations = {
     const [user] = await ctx.db.query.users({
       where: {
         resetToken: args.resetToken,
-        resetTokenEspiry_gte: Date.now() - 3600000,
+        resetTokenExpiry_gte: Date.now() - 3600000,
       }
     })
     if (!user) throw new Error('This token is either invalid or expired.')
@@ -110,7 +108,7 @@ const Mutations = {
 
     signJWTAndCreateCookie(updatedUser, ctx)
 
-    return user
+    return updatedUser
   }
 }
 
