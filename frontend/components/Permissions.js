@@ -1,5 +1,6 @@
-import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import PropTypes from 'prop-types'
+import { Query } from 'react-apollo'
 
 import Error from './ErrorMessage'
 import Table from './styles/Table'
@@ -37,12 +38,12 @@ const Permissions = () => (
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                {possiblePermissions.map(permission => <th>{permission}</th>)}
+                {possiblePermissions.map(permission => <th key={permission}>{permission}</th>)}
                 <th>👇</th>
               </tr>
             </thead>
             <tbody>
-              {data.users.map(user => <User user={user} />)}
+              {data.users.map(user => <UserPermissions key={user.id} user={user} />)}
             </tbody>
           </Table>
         </div>
@@ -51,7 +52,24 @@ const Permissions = () => (
   </Query>
 )
 
-class User extends React.Component {
+class UserPermissions extends React.Component {
+  state = {
+    permissions: this.props.user.permissions,
+  }
+
+  handleChange = e => {
+    console.log(e.target.value)
+    const checkbox = e.target
+    let updatedPermissions = [...this.state.permissions]
+    if (checkbox.checked) {
+      updatedPermissions.push(checkbox.value)
+    } else {
+      updatedPermissions = updatedPermissions
+        .filter(permission => permission !== checkbox.value)
+    }
+    this.setState({ permissions: updatedPermissions })
+  }
+
   render() {
     const { user } = this.props
     return (
@@ -59,9 +77,13 @@ class User extends React.Component {
         <td>{user.name}</td>
         <td>{user.email}</td>
         {possiblePermissions.map(permission => (
-          <td>
+          <td key={permission}>
             <label htmlFor={`${user.id}-permission-${permission}`}>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={this.state.permissions.includes(permission)}
+                value={permission}
+                onChange={this.handleChange} />
             </label>
           </td>
         ))}
@@ -69,6 +91,15 @@ class User extends React.Component {
       </tr>
     )
   }
+}
+
+UserPermissions.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+    id: PropTypes.string,
+    permissions: PropTypes.array,
+  }).isRequired
 }
 
 export default Permissions
