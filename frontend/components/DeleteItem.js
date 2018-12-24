@@ -16,7 +16,7 @@ class DeleteItem extends Component {
 
   handleClick = (e, deleteItemMutation) => {
     if (confirm('You sure you want to delete this? No backsies.')) {
-      deleteItemMutation()
+      deleteItemMutation().catch(err => alert(err.message))
     }
   }
 
