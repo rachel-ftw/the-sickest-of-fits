@@ -1,19 +1,17 @@
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
 const { randomBytes } = require('crypto')
 const { promisify } = require('util')
 
+const {
+  checkIfLoggedIn,
+  hasPermission,
+  signJWTAndCreateCookie,
+} = require('../utils')
 const { transport, makeANiceEmail } = require('../mail')
-
-const signJWTAndCreateCookie = (user, ctx) => {
-  const oneYear = 1000 * 60 * 60 * 24 * 365
-  const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET)
-  ctx.response.cookie('token', token, { httpOnly: true, maxAge: oneYear })
-}
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
-    if (!ctx.request.userId) throw new Error('You must be logged in to do that.')
+    checkIfLoggedIn(ctx)
 
     const item = await ctx.db.mutation.createItem({
       data: {
@@ -30,6 +28,7 @@ const Mutations = {
   },
 
   updateItem(parent, args, ctx, info) {
+    checkIfLoggedIn(ctx)
     const updates = {...args}
     delete updates.id
     return ctx.db.mutation.updateItem({
@@ -41,6 +40,7 @@ const Mutations = {
   },
 
   async deleteItem(parent, args, ctx, info) {
+    checkIfLoggedIn(ctx)
     const where = { id: args.id }
     const item = await ctx.db.query.item({ where }, `{ id title }`)
     // TODO check if they have permissions to delete
@@ -102,6 +102,7 @@ const Mutations = {
         <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click here to reset.</a>
       `)
     })
+    // TODO check that mail was successful
 
     return { message: "Successfully requested password reset." }
   },
@@ -132,7 +133,21 @@ const Mutations = {
     signJWTAndCreateCookie(updatedUser, ctx)
 
     return updatedUser
-  }
+  },
+
+  async updatePermissions(parent, args, ctx, info) {
+    checkIfLoggedIn(ctx)
+    const user = await ctx.db.query.user({
+      where: { id: ctx.request.userId }
+    }, info)
+    hasPermission(user, ['ADMIN', 'PERMISSIONUPDATE'])
+    return ctx.db.mutation.updateUser({
+      where: { id: args.userId },
+      data: {
+        permissions: { set: args.permissions },
+      },
+    }, info)
+  },
 }
 
 module.exports = Mutations
