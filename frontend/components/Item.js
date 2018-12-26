@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 
+import AddToCart from './AddToCart'
 import formatMoney from '../lib/formatMoney'
 import ItemStyles from './styles/ItemStyles'
 import PriceTag from './styles/PriceTag'
@@ -30,7 +31,7 @@ const Item = ({
       <Link href={{ pathname: '/update', query: { id } }}>
         <a>Edit ✏️</a>
       </Link>
-      <button>Add To Cart</button>
+      <AddToCart id={id} />
       <DeleteButton id={id}>Delete</DeleteButton>
     </div>
   </ItemStyles>

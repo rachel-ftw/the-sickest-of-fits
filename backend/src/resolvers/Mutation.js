@@ -32,11 +32,9 @@ const Mutations = {
     const updates = {...args}
     delete updates.id
     return ctx.db.mutation.updateItem({
-        data: updates,
-        where: { id: args.id }
-      },
-      info
-    )
+      data: updates,
+      where: { id: args.id }
+    }, info)
   },
 
   async deleteItem(parent, args, ctx, info) {
@@ -157,6 +155,33 @@ const Mutations = {
       },
     }, info)
   },
+
+  async addToCart(parent, args, ctx, info) {
+    checkIfLoggedIn(ctx)
+    const { userId } = ctx.request
+
+    const [existingCartItem] = await ctx.db.query.cartItems({
+      where: {
+        user: { id: userId },
+        item: { id: args.id },
+      },
+    })
+
+    if (existingCartItem) {
+      console.log('item is already in cart')
+      return ctx.db.mutation.updateCartItem({
+        where: { id: existingCartItem.id },
+        data: { quantity: existingCartItem.quantity + 1}
+      }, info)
+    }
+
+    return ctx.db.mutation.createCartItem({
+      data: {
+        user: { connect: { id: userId } },
+        item: { connect: { id: args.id } },
+      }
+    }, info)
+  }
 }
 
 module.exports = Mutations
