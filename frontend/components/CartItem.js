@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-
-import formatMoney from '../lib/formatMoney'
 import styled from 'styled-components'
-import { checkPropTypes } from 'prop-types';
+
+import DeleteFromCart from './DeleteFromCart'
+import formatMoney from '../lib/formatMoney'
 
 const CartItemStyles = styled.li`
   padding: 1rem 0;
@@ -21,6 +21,7 @@ const CartItemStyles = styled.li`
 
 const CartItem = ({
   cartItem: {
+    id,
     quantity,
     item: {
       image,
@@ -40,11 +41,12 @@ const CartItem = ({
           <em>{quantity} &times; {formatMoney(price)} each</em>
         </p>
       </div>
+      <DeleteFromCart id={id} />
     </CartItemStyles>
   )
 }
 
-CartItem.prototype = {
+CartItem.propTypes = {
   cartItem: PropTypes.object.isRequired,
 }
 
