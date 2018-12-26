@@ -21,7 +21,7 @@ class DeleteItem extends Component {
   }
 
   handleUpdate = (cache, payload) => {
-    const data = cache.readQuery({ query: ALL_ITEMS_QUERY})
+    const data = cache.readQuery({ query: ALL_ITEMS_QUERY })
 
     data.items = data.items
       .filter(item => item.id !== payload.data.deleteItem.id)
