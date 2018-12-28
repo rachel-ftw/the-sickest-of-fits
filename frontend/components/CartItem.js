@@ -29,22 +29,21 @@ const CartItem = ({
       title,
     }
   }
-}) => {
-  return (
-    <CartItemStyles>
-      <img width={100} src={image} alt={title}/>
-      <div className="cart-item-details">
-        <h3>{title}</h3>
-        <p>
-          {formatMoney(price * quantity)}
-          {' - '}
-          <em>{quantity} &times; {formatMoney(price)} each</em>
-        </p>
-      </div>
-      <DeleteFromCart id={id} />
-    </CartItemStyles>
-  )
-}
+}) => (
+  <CartItemStyles>
+    <img width={100} src={image} alt={title}/>
+    <div className="cart-item-details">
+      <h3>{title}</h3>
+      <p>
+        {formatMoney(price * quantity)}
+        {' - '}
+        <em>{quantity} &times; {formatMoney(price)} each</em>
+      </p>
+    </div>
+    <DeleteFromCart id={id} />
+  </CartItemStyles>
+)
+
 
 CartItem.propTypes = {
   cartItem: PropTypes.object.isRequired,

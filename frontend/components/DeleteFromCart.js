@@ -22,6 +22,7 @@ const DELETE_FROM_CART_MUTATION = gql`
     }
   }
 `
+// TODO: need a decrement cartItem if there are multiple of a single item. Delete currently deletes all of that item type.
 
 class DeleteFromCart extends Component {
   update = (cache, payload) => {
