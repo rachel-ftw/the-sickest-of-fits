@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const { randomBytes } = require('crypto')
 const { promisify } = require('util')
 
+const stripe = require('../stripe')
 const {
   checkIfLoggedIn,
   hasPermission,
@@ -185,13 +186,44 @@ const Mutations = {
 
   async deleteFromCart(parent, args, ctx, info) {
     const cartItem = await ctx.db.query.cartItem({
-      where: { id: args.id}
-    }, `{ id, user{ id } }`)
+      where: { id: args.id }
+    }, `{ id, user { id } }`)
     if (!cartItem) throw new Error('No Cart Item Found')
     if (cartItem.user.id !== ctx.request.userId) throw new Error('no cheating')
 
     return ctx.db.mutation.deleteCartItem({
       where: { id: args.id }
+    })
+  },
+
+  async createOrder(parent, args, ctx, info) {
+    checkIfLoggedIn(ctx)
+    const { userId } = ctx.request
+    const user = await ctx.db.query.user({ where: { id: userId } }, `{
+      email
+      id
+      name
+      cart {
+        id
+        quantity
+        item {
+          description
+          id
+          image
+          price
+          title
+        }
+      }
+    }`)
+
+    const amount = user.cart.reduce(
+      (tally, cartItem) => tally + cartItem.item.price * cartItem.quantity, 0
+    )
+
+    const charge = await stripe.charges.create({
+      amount,
+      currency: 'USD',
+      source: args.token,
     })
   },
 }
